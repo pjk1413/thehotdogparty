@@ -1,6 +1,6 @@
 # Hot Dog Party
 
-Static invite site for Hot Dog Party. Deployed to a Google Cloud Storage bucket on every push to `main`.
+Static invite site for Hot Dog Party. Deploy to Google Cloud Storage manually from the Actions tab.
 
 ## Local preview
 
@@ -15,6 +15,7 @@ Or open `public/index.html` directly in a browser.
 ```
 public/
   index.html
+  favicon.svg
   assets/
     stick-figure.png
 .github/workflows/deploy.yml
@@ -22,31 +23,49 @@ public/
 
 ## Deploy (GCS)
 
-The workflow in `.github/workflows/deploy.yml` uploads `public/` to your bucket using Workload Identity Federation (no long-lived JSON keys).
+The workflow in `.github/workflows/deploy.yml` uploads `public/` to your bucket using a Google Cloud service account key. Run it manually: **Actions → Deploy to GCS → Run workflow**.
 
 ### One-time Google Cloud setup
 
-1. Create a GCS bucket (optionally named for your domain).
+1. Create a GCS bucket (this project uses `hotdogparty-ui`).
 2. Enable static website hosting on the bucket (`index.html` as the main page).
 3. Grant public read on objects (e.g. `allUsers` → `roles/storage.objectViewer`), or put a load balancer / CDN in front.
-4. Create a deploy service account with permission to write objects to that bucket (e.g. `roles/storage.objectAdmin` on the bucket).
-5. Create a Workload Identity Pool + GitHub OIDC provider, and allow this repo’s `main` workflow to impersonate the service account.
+4. Create a deploy service account in project `kitchensinkworks`.
+5. Grant it write access to the bucket (e.g. `roles/storage.objectAdmin` on `hotdogparty-ui`).
+6. Create a JSON key for that service account and store it in GitHub (see below).
+
+Example:
+
+```bash
+gcloud config set project kitchensinkworks
+
+gcloud iam service-accounts create hotdogparty-deploy \
+  --display-name="Hot Dog Party GCS deploy"
+
+gcloud storage buckets add-iam-policy-binding gs://hotdogparty-ui \
+  --member="serviceAccount:hotdogparty-deploy@kitchensinkworks.iam.gserviceaccount.com" \
+  --role="roles/storage.objectAdmin"
+
+gcloud iam service-accounts keys create sa-key.json \
+  --iam-account=hotdogparty-deploy@kitchensinkworks.iam.gserviceaccount.com
+```
+
+Then paste the contents of `sa-key.json` into the GitHub secret and delete the local file.
 
 ### GitHub repository configuration
 
 **Variables** (Settings → Secrets and variables → Actions → Variables):
 
-| Name | Example |
+| Name | Value |
 | --- | --- |
-| `GCP_PROJECT_ID` | `my-gcp-project` |
-| `GCS_BUCKET` | `thehotdogparty.com` |
+| `GCP_PROJECT_ID` | `kitchensinkworks` |
+| `GCS_BUCKET` | `hotdogparty-ui` |
 
 **Secrets:**
 
-| Name | Example |
+| Name | Value |
 | --- | --- |
-| `GCP_WORKLOAD_IDENTITY_PROVIDER` | `projects/123456789/locations/global/workloadIdentityPools/github/providers/github` |
-| `GCP_SERVICE_ACCOUNT` | `deploy@my-gcp-project.iam.gserviceaccount.com` |
+| `GCP_SA_KEY` | Full JSON key for the deploy service account |
 
 Until these are set, the deploy job will fail on auth/upload — that’s expected.
 
