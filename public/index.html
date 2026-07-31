@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hot Dog Party</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.18 0 0);
+    --ink-muted: oklch(0.45 0 0);
+    --paper: oklch(0.995 0.002 90);
+    --rule: oklch(0.85 0 0);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--ink);
+  }
+
+  a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  a:hover { color: var(--ink-muted); }
+
+  .page {
+    background: var(--paper);
+    min-height: 100vh;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 24px 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-brand {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 28px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      gap: 14px;
+      padding: 22px 16px 20px;
+    }
+
+    .nav-brand {
+      font-size: 15px;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      gap: 14px;
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      letter-spacing: 1.2px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .nav-links {
+      gap: 10px;
+    }
+
+    .nav-links a {
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 100px 24px 80px;
+  }
+
+  .hero h1 {
+    font-size: clamp(56px, 10vw, 128px);
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .hero h1:last-of-type { margin-bottom: 32px; }
+
+  .hero img {
+    width: 220px;
+    max-width: 60vw;
+    height: auto;
+    margin-bottom: 40px;
+  }
+
+  .hero-tagline {
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    font-style: italic;
+    opacity: 0.75;
+    max-width: 28em;
+  }
+
+  .band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-size: 15px;
+    letter-spacing: 3px;
+    font-weight: 600;
+    opacity: 0.6;
+    margin-bottom: 14px;
+  }
+
+  .band h2 {
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 700;
+    margin: 0 0 12px;
+    letter-spacing: 1px;
+  }
+
+  .band-body {
+    font-size: 19px;
+    line-height: 1.5;
+    max-width: 28em;
+  }
+
+  .competition {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 90px 24px 40px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .history {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 90px 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .history h2 {
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 700;
+    margin: 0 0 28px;
+    letter-spacing: 1px;
+  }
+
+  .history p {
+    font-size: 20px;
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 0 20px;
+  }
+
+  .history p:last-child { margin-bottom: 0; }
+
+  .competition h2 {
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 800;
+    margin: 0 0 10px;
+    letter-spacing: 1px;
+  }
+
+  .competition-sub {
+    font-size: 18px;
+    font-style: italic;
+    opacity: 0.75;
+    margin-bottom: 32px;
+  }
+
+  .competition p {
+    font-size: 20px;
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 0 56px;
+  }
+
+  .criteria {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 700px;
+    padding-bottom: 90px;
+  }
+
+  .criterion { width: 180px; }
+
+  .criterion-title {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .criterion-body {
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.75;
+  }
+
+  .site-footer {
+    display: flex;
+    justify-content: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .site-footer-text {
+    font-size: 13px;
+    letter-spacing: 2px;
+    opacity: 0.55;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <div class="nav-brand">HOT DOG PARTY</div>
+    <div class="nav-links">
+      <a href="#when">WHEN</a>
+      <a href="#location">LOCATION</a>
+      <a href="#competition">COMPETITION</a>
+      <a href="#history">HISTORY</a>
+    </div>
+  </nav>
+
+  <section id="home" class="hero">
+    <h1>THE HOT DOG</h1>
+    <h1>PARTY</h1>
+    <img src="assets/stick-figure.png" alt="Stick figure holding up a hot dog"/>
+    <div class="hero-tagline">It&rsquo;s not about the hot dogs, it&rsquo;s about the party</div>
+  </section>
+
+  <section id="when" class="band">
+    <div class="section-label">WHEN</div>
+    <h2>SEPTEMBER 26</h2>
+    <div class="band-body">Starting at 1 PM &mdash; stay as long as you like</div>
+  </section>
+
+  <section id="location" class="band">
+    <div class="section-label">LOCATION</div>
+    <div class="band-body">Follow the smell of grilled ambition</div>
+  </section>
+
+  <section id="competition" class="competition">
+    <div class="section-label">THE COMPETITION</div>
+    <h2>LE GRAND DOG</h2>
+    <div class="competition-sub">a hot dog cooking competition</div>
+    <p>
+      Take the humble hot dog somewhere it has never been. Elevate it. Refine it. Make it classy. Everyone at the party is a judge.
+    </p>
+    <div class="criteria">
+      <div class="criterion">
+        <div class="criterion-title">FLAVOR</div>
+        <div class="criterion-body">Does it taste incredible?</div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-title">CLASSINESS</div>
+        <div class="criterion-body">Has it been elevated?</div>
+      </div>
+      <div class="criterion">
+        <div class="criterion-title">DOG PRESENCE</div>
+        <div class="criterion-body">Can you taste &amp; tell it's a hot dog?</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="history" class="history">
+    <div class="section-label">HISTORY</div>
+    <h2>THE FIRST ANNUAL</h2>
+    <p>
+      Every legend starts somewhere. This one starts with grilled meat, questionable ambition, and a group of people who decided a regular cookout simply wasn&rsquo;t enough.
+    </p>
+    <p>
+      Welcome to the inaugural Hot Dog Party &mdash; officially the First Annual. History is being made. Mostly in mustard.
+    </p>
+  </section>
+
+  <footer class="site-footer">
+    <div class="site-footer-text">&copy; 2026 thehotdogparty.com</div>
+  </footer>
+
+</div>
+</body>
+</html>
